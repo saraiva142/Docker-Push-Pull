@@ -28,3 +28,10 @@ Para Executar a aplicação:
 docker run -p 127.0.0.1:8000:8000 jessicavalcante/app-flask-v2
 
 http://localhost:8000/
+
+## Atualizar
+
+docker stop app-web        # Para o container atual
+docker rm app-web          # Remove o container antigo
+docker build -t app-web .  # Recria a imagem com o código atualizado
+docker run --name app-web -p 127.0.0.1:8000:8000 app-web  # Roda um novo container
