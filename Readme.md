@@ -35,3 +35,35 @@ docker stop app-web        # Para o container atual
 docker rm app-web          # Remove o container antigo
 docker build -t app-web .  # Recria a imagem com o código atualizado
 docker run --name app-web -p 127.0.0.1:8000:8000 app-web  # Roda um novo container
+
+
+# Aula de Volumes / vincular volume em containers
+
+doucker pull ubuntu 
+
+docker run --name linux0 -d -it ubuntu
+docker run --name linux1 -d -it ubuntu
+
+docker volume create dados
+docker volume ls
+
+docker run --name linux3 -d -it -v dados:/meus-dados ubuntu
+docker run --name linux4 -d -it -v dados:/meus-dados ubuntu
+
+docker inspect linux3
+
+Criar uma nova janela:
+1° com linux3
+docker exec -it linux3 bash
+ls -> procurar pasta meus-dados
+cd meus-dados
+echo "sou o linux03" > linux03.txt
+cat linux04.txt
+
+
+3° com linux4
+docker exec -it linux4 bash
+ls -> procurar pasta meus-dados
+cd meus-dados
+cat linux03.txt
+
