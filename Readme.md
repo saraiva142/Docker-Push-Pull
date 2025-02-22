@@ -19,6 +19,12 @@ Subir para o github:
     docker login
     docker push saraiva1/app-flask-v2 
 
+Para atualizar no git
+    docker build -t saraiva1/app-web
+    docker tag saraiva1/app-web saraiva1/app-web:v2
+    docker login
+    docker push saraiva1/app-web:v2
+
 
 Baixar da Jessica:
 
