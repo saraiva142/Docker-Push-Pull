@@ -1,4 +1,4 @@
-from flask import Flask, render_template_string
+from flask import Flask, render_template_string, request, jsonify
 
 app = Flask(__name__)
 
@@ -56,17 +56,70 @@ def home():
             body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: Arial, sans-serif; }
             .background { background-image: url('https://i.ibb.co/xKxyGHY8/template.jpg'); background-size: cover; background-position: center; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
             .text { color: white; font-size: 3rem; font-weight: bold; text-align: center; margin: 10px; }
+            .discreet-button { position: absolute; bottom: 10px; right: 10px; background: transparent; border: none; color: white; cursor: pointer; font-size: 0.8rem; }
         </style>
     </head>
     <body>
         <div class="background">
             <div class="text"> Joao Saraiva </div>
             <div class="text"> Jessica Cavalcante </div>
+            <form action="/form" method="get">
+                <button class="discreet-button" type="submit">Form</button>
+            </form>
         </div>
     </body>
     </html>
     """
     return render_template_string(main_html)
+
+## Página de formulário gerada pelo copilot
+# Lista para armazenar os dados do formulário
+form_data = []
+@app.route("/form", methods=["GET", "POST"])
+def form():
+    if request.method == "POST":
+        # Aqui você pode adicionar a lógica para criar, atualizar ou deletar dados
+        nome = request.form.get("nome")
+        sobrenome = request.form.get("sobrenome")
+        # Adicione os dados à lista
+        form_data.append({"nome": nome, "sobrenome": sobrenome})
+        #return jsonify({"message": "Dados enviados com sucesso!"})
+
+    main_html = """
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Esportes Extremos</title>
+        <style>
+            body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: Arial, sans-serif; }
+            .background { background-image: url('https://i.ibb.co/xKxyGHY8/template.jpg'); background-size: cover; background-position: center; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+            .text { color: white; font-size: 3rem; font-weight: bold; text-align: center; margin: 10px; }
+            .form-container { background: rgba(0, 0, 0, 0.5); padding: 20px; border-radius: 10px; }
+            .form-container input { margin: 10px 0; padding: 10px; width: 100%; }
+            .form-container button { padding: 10px 20px; background: #fff; border: none; cursor: pointer; }
+        </style>
+    </head>
+    <body>
+        <div class="background">
+            <div class="text"> Joao Saraiva </div>
+            <div class="text"> Jessica Cavalcante </div>
+            <div class="form-container">
+                <form method="POST">
+                    <input type="text" name="nome" placeholder="Nome" required>
+                    <input type="text" name="sobrenome" placeholder="Sobrenome" required>
+                    <button type="submit">Enviar</button>
+                </form>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    return render_template_string(main_html)
+@app.route("/api/form_data", methods=["GET"])
+def get_form_data():
+    return jsonify(form_data)
 
 if __name__ == "__main__":
     app.run(debug=True)
