@@ -121,5 +121,77 @@ def form():
 def get_form_data():
     return jsonify(form_data)
 
+@app.route("/results", methods=["GET"])
+def results():
+    
+    main_html = """
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Esportes Extremos</title>
+        <style>
+            body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: Arial, sans-serif; }
+            .background { background-image: url('https://i.ibb.co/xKxyGHY8/template.jpg'); background-size: cover; background-position: center; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+            .text { color: white; font-size: 3rem; font-weight: bold; text-align: center; margin: 10px; }
+            .form-container { background: rgba(0, 0, 0, 0.5); padding: 20px; border-radius: 10px; }
+            .form-container input { margin: 10px 0; padding: 10px; width: 100%; }
+            .form-container button { padding: 10px 20px; background: #fff; border: none; cursor: pointer; }
+            .results { background: rgba(0, 0, 0, 0.5); padding: 20px; border-radius: 10px; margin-top: 20px; width: 80%; }
+            .results h2 { color: white; font-size: 2rem; }
+            .results ul { list-style: none; padding: 0; }
+            .results li { color: white; font-size: 1.2rem; margin: 10px 0; }
+            .search-container { margin: 20px 0; }
+            .search-container input { padding: 8px; width: 100%; }
+        </style>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                fetch('/api/form_data')
+                    .then(response => response.json())
+                    .then(data => {
+                        const resultsList = document.getElementById('results-list');
+                        const searchInput = document.getElementById('search-input');
+                        
+                        function renderList(filteredData) {
+                            resultsList.innerHTML = '';
+                            filteredData.forEach(item => {
+                                const li = document.createElement('li');
+                                li.textContent = `${item.nome} ${item.sobrenome}`;
+                                resultsList.appendChild(li);
+                            });
+                        }
+
+                        renderList(data);
+
+                        searchInput.addEventListener('input', function() {
+                            const searchTerm = searchInput.value.toLowerCase();
+                            const filteredData = data.filter(item => 
+                                item.nome.toLowerCase().includes(searchTerm) || 
+                                item.sobrenome.toLowerCase().includes(searchTerm)
+                            );
+                            renderList(filteredData);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+            });
+        </script>
+    </head>
+    <body>
+        <div class="background">
+            <div class="text"> Formulário </div>
+            <div class="results">
+                <h2>Resultados</h2>
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Pesquisar...">
+                </div>
+                <ul id="results-list"></ul>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    return render_template_string(main_html)
+
 if __name__ == "__main__":
     app.run(debug=True)
